@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { uniqueById, groupByCause } from '../src/lib/kb/causes.ts';
+import { deskRef } from '../src/lib/kb/desk-ref.ts';
+const read = p => JSON.parse(fs.readFileSync(p));
+const raw = read('src/lib/data/reports-4471.json');
+const tenants = fs.readdirSync('src/lib/data/tenants').map(f => read(`src/lib/data/tenants/${f}`));
+const reports = uniqueById(raw).filter(r => r.mergedInto === 4471);
+const groups = groupByCause(reports, r => tenants.find(t => t.handle === r.tenant));
+assert.equal(reports.length, 412);
+assert.deepEqual(Object.fromEntries(groups.map(g => [g.cause, g.reports.length])), { parser: 379, hint: 33 });
+const html = fs.readFileSync('rendered/kb/incidents/4471-review/index.html', 'utf8');
+assert(html.includes(deskRef('Jakub Chojnacki / Codex / S01E03')));
+assert(html.includes('379') && html.includes('33') && html.includes('<svg'));
+assert(html.includes('<style') && !html.includes('no desk ref:'));
+const evidence = { generatedAt: new Date().toISOString(), rawRows: raw.length, uniqueReports: reports.length, duplicateRows: raw.length - reports.length, groups: groups.map(g => ({...g, reports: g.reports.map(r => r.id), count: g.reports.length})) };
+fs.writeFileSync('report-evidence.json', JSON.stringify(evidence, null, 2)+'\n');
+console.log('Verified report counts, rendered chart, styles and derived signature stamp.');

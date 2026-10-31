@@ -1,0 +1,44 @@
+---
+layout: runbook
+title: '#4471: separate causes and safer triage'
+owner: Jakub Chojnacki and Codex
+status: proposed
+reviewed: '2026-10-31'
+signature: 'Jakub Chojnacki / Codex / S01E03'
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import DedupeExplorer from '#lib/kb/DedupeExplorer.svelte';
+</script>
+
+The incident's claim that one fix covers every report disagrees with its computed view.
+The following counts come from unique report IDs, the ticket assignment, and the tenant's locale and booking form. Intake tags and browser locale do not establish the cause.
+
+<CauseTable ticket={4471} />
+
+## Separate fixes
+
+The shared parser reads month first for day-first tenants. Correct its input contract and check that bookings and invitations preserve the intended date.
+
+The booking-v3 form tells day-first tenants to type MM/DD/YYYY but reads their input day first. Correct the hint and validate it against the form's parser. This needs its own ticket and fix.
+
+Reports described as one-day moves remain footnoted under the computed cause. That description alone does not prove a timezone defect.
+
+## Arrival is not triage
+
+<QueueTimeline ticket={4471} />
+
+Received and merged timestamps measure different events. A batch of merges is not evidence of a simultaneous incident onset. Use report receipt time to assess when customers first experienced symptoms.
+
+## Replace subject-only merging
+
+Decision 0001 is an accepted historical record and remains unchanged. Its subject-only rule can combine different causes and split reports of the same cause. Propose a replacement decision: match tenant context, input path and cause; retain separate tickets for separate fixes. Unknown tenants need investigation before merging.
+
+<DedupeExplorer />
+
+The old triage page's review date exceeds the shared layout's staleness threshold. Recheck its advice against computed evidence before using it. This page is an assessment of the supplied export, not a claim that the working desk has stopped changing.
+
+<RenderStamp {signature} />
