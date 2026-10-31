@@ -4,7 +4,7 @@ title: '#4471: separate causes and safer triage'
 owner: Jakub Chojnacki and Codex
 status: reviewed
 reviewed: '2026-10-31'
-signature: 'Jakub Chojnacki / Codex / S01E03'
+signature: "v1.eyJzdWIiOiIyMDI3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0Mzc5ODQsImV4cCI6MTc5MzUyNDM4NH0.9qn7XhYUKi1ZP5NYZ1T_Q_p5TbLnzby2b6qJxELnVxM"
 ---
 
 <script>

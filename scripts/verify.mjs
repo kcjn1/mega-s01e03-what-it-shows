@@ -10,7 +10,12 @@ const groups = groupByCause(reports, r => tenants.find(t => t.handle === r.tenan
 assert.equal(reports.length, 412);
 assert.deepEqual(Object.fromEntries(groups.map(g => [g.cause, g.reports.length])), { parser: 379, hint: 33 });
 const html = fs.readFileSync('rendered/kb/incidents/4471-review/index.html', 'utf8');
-assert(html.includes(deskRef('Jakub Chojnacki / Codex / S01E03')));
+const page = fs.readFileSync('src/routes/kb/incidents/4471-review/+page.svx', 'utf8');
+const signature = page.match(/^signature: (.+)$/m)?.[1];
+assert(signature, 'The assessment must have a signature');
+const signatureValue = JSON.parse(signature);
+assert.equal(signatureValue.split('.').length, 3, 'The page must carry the course signature');
+assert(html.includes(deskRef(signatureValue)), 'Rendered desk reference must match the page signature');
 assert(html.includes('379') && html.includes('33') && html.includes('<svg'));
 assert(html.includes('<style') && !html.includes('no desk ref:'));
 const evidence = { generatedAt: new Date().toISOString(), rawRows: raw.length, uniqueReports: reports.length, duplicateRows: raw.length - reports.length, groups: groups.map(g => ({...g, reports: g.reports.map(r => r.id), count: g.reports.length})) };
