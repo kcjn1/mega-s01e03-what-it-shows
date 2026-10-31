@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471: separate causes and safer triage'
 owner: Jakub Chojnacki and Codex
-status: proposed
+status: reviewed
 reviewed: '2026-10-31'
 signature: 'Jakub Chojnacki / Codex / S01E03'
 ---
@@ -19,11 +19,17 @@ The following counts come from unique report IDs, the ticket assignment, and the
 
 <CauseTable ticket={4471} />
 
-## Separate fixes
+## Engineering outcome
+
+The course desk update states that #4471 closed on 5 October 2026. The parser was **fixed** by `fix(dates): parse dd/mm for eu locales`. The hint was **not fixed**: booking-v3 was retired, so its issue was closed as not planned. Retirement removes this form from use; it does not demonstrate a corrected hint.
+
+The historical report counts below describe the export before closure. They are not a count of currently open bugs.
+
+## Separate causes
 
 The shared parser reads month first for day-first tenants. Correct its input contract and check that bookings and invitations preserve the intended date.
 
-The booking-v3 form tells day-first tenants to type MM/DD/YYYY but reads their input day first. Correct the hint and validate it against the form's parser. This needs its own ticket and fix.
+The booking-v3 form tells day-first tenants to type MM/DD/YYYY but reads their input day first. Correct the hint and validate it against the form's parser. This required a separate ticket. The desk subsequently retired the form instead of fixing its hint.
 
 Reports described as one-day moves remain footnoted under the computed cause. That description alone does not prove a timezone defect.
 
